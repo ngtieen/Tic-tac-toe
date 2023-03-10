@@ -15,12 +15,14 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return { // Chúng ta sẽ gửi về 2 giá trị là: Người thắng cuộc và vị trí thắng cuộc.
+        winnerLocation: [a,b,c],
+        winnerPlayer: squares[a]
+      };
     }
   }
   return null;
 }
-
 class Game extends React.Component{
   constructor(){
     super();
@@ -69,7 +71,7 @@ class Game extends React.Component{
     const winner = calculateWinner(squares);
     let status;
     if(winner){
-      status = "Winner is: " + winner;
+      status = "Winner is: " + winner.winnerPlayer; // Sửa lại chút đoạn hiển thị winner
     }else if(this.state.stepNumber === 9){
       status = "No one win";
     }else{
@@ -81,7 +83,9 @@ class Game extends React.Component{
     });
     return(
       <div>
-        <div className="game"><Board squares={squares} onClick={i => this.handleClick(i)} /></div>
+         <div className="game">
+              <Board squares={squares} onClick={i => this.handleClick(i)} winner={winner && winner.winnerLocation}/>
+            </div>
         <div className="game-info">
           <p>{status}</p>
           <ol>{moves}</ol>
